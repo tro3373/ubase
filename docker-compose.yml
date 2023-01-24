@@ -4,11 +4,12 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      # args:
-      #   - docker_user=${docker_user}
-        # - UID=${UID}
-        # - GID=${GID}
+      args:
+        - uid=${uid}
+        - gid=${gid}
+        # - docker_user=${docker_user}
     # user: ${docker_user}
+    user: "${uid}:${gid}"
     image: ubase
     container_name: ubase
     tty: true
@@ -18,15 +19,30 @@ services:
     #   - 443:443
     environment:
       - TZ=Asia/Tokyo
-      - DISPLAY
+      - DISPLAY=:101
       - XMODIFIERS # X用のIM設定
       - GTK_IM_MODULE # GTK(GimpToolKit)用のIM設定
       - QT_IM_MODULE # QT用のIM設定
       # [Dockerコンテナ上のGUIアプリで日本語入力する（Linux）](https://zenn.dev/ysuito/articles/c196ae84c95e31)
       - DefalutIMModule=fcitx
       - DBUS_SESSION_BUS_ADDRESS
+      - XDG_RUNTIME_DIR=/tmp
+      - XAUTHORITY=/home/user/.Xauthority
+    working_dir: /home/user
+    # volumes:
+    #   - /run/user/${uid:-1000}/bus:/run/user/${uid:-1000}/bus
     volumes:
-      - /run/user/${UID:-1000}/bus:/run/user/${UID:-1000}/bus
+      - type: bind
+        source: /tmp/.X11-unix/X0
+        target: /tmp/.X11-unix/X101
+      - type: bind
+        source: "${XAUTHORITY}"
+        # target: /auth/.Xauthority
+        target: /home/user/.Xauthority
+        read_only: true
+      - type: bind
+        source: "${XDG_RUNTIME_DIR}/wayland-0"
+        target: /tmp/wayland-0
     #   - ./server/nginx/conf.d/app.dev.conf:/etc/nginx/conf.d/default.conf
     #   - ./server/nginx/nginx.conf:/etc/nginx/nginx.conf
     #   - ./server/nginx/proxy.conf:/etc/nginx/proxy.conf

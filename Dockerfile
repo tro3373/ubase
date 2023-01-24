@@ -26,6 +26,12 @@ RUN apt-get install -y \
     && dpkg-reconfigure tzdata \
     && locale-gen ja_JP.UTF-8
 
-# # ARG UID=1001
+ARG uid=1001
+ARG gid=1001
 # ARG docker_user=1001:1001
 # RUN useradd -m -u $(echo $docker_user |cut -d: -f1) user
+# RUN useradd -m -u ${uid} user
+RUN groupadd -g ${gid} user && \
+    useradd -m -s /bin/bash -u ${uid} -g user user && \
+    chown root:root /home/user && \
+    chown -R user:user /home/user
