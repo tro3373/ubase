@@ -19,6 +19,7 @@ RUN apt-get install -y \
     dbus-x11 \
     pulseaudio \
     fcitx-mozc \
+    gedit \
     firefox \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
@@ -26,8 +27,8 @@ RUN apt-get install -y \
     && dpkg-reconfigure tzdata \
     && locale-gen ja_JP.UTF-8
 
-ARG uid=1001
-ARG gid=1001
+ARG uid=1000
+ARG gid=1000
 # ARG docker_user=1001:1001
 # RUN useradd -m -u $(echo $docker_user |cut -d: -f1) user
 # RUN useradd -m -u ${uid} user
