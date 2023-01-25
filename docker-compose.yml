@@ -29,9 +29,8 @@ services:
       - XDG_RUNTIME_DIR=/tmp
       - XAUTHORITY=/home/user/.Xauthority
     working_dir: /home/user
-    # volumes:
-    #   - /run/user/${uid:-1000}/bus:/run/user/${uid:-1000}/bus
     volumes:
+      - /run/user/${uid:-1000}/bus:/run/user/${uid:-1000}/bus
       - type: bind
         source: /tmp/.X11-unix/X0
         target: /tmp/.X11-unix/X101
