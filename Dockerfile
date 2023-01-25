@@ -19,6 +19,7 @@ RUN apt-get install -y \
     dbus-x11 \
     pulseaudio \
     fcitx-mozc \
+    wget \
     firefox \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
@@ -35,3 +36,11 @@ RUN groupadd -g ${gid} user && \
     useradd -m -s /bin/bash -u ${uid} -g user user && \
     chown root:root /home/user && \
     chown -R user:user /home/user
+
+# Insatall wine for ubuntu 22.04
+RUN dpkg --add-architecture i386 && \
+    mkdir -pm755 /etc/apt/keyrings && \
+    wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key && \
+    wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/jammy/winehq-jammy.sources && \
+    apt-get update && \
+    apt-get install -y --install-recommends winehq-stable winetricks
