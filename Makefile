@@ -19,7 +19,7 @@ build:
 	@make -s _compose CMD=build
 
 up: start # logsf
-start:
+start: _prepare
 	@make -s _compose CMD="up -d"
 stop: down
 down:
@@ -34,3 +34,6 @@ logsf:
 
 console:
 	@docker exec -it $(app) /bin/bash --login
+
+_prepare:
+	@! test -e .data/.wine && mkdir -p .data/.wine || :
