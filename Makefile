@@ -10,27 +10,33 @@ gid := $(shell id -g)
 tag:
 	@tag="Release_${app}_${timestamp}" && git tag "$$tag" && echo "==> $$tag tagged."
 
-# @docker_user=$(docker_user) docker-compose $(CMD) $(ARG)
-# @docker-compose $(CMD) $(ARG)
+# @docker_user=$(docker_user) docker-compose $(cmd) $(arg)
+# @docker-compose $(cmd) $(arg)
 _compose:
-	@uid=$(uid) gid=$(gid) docker-compose $(CMD) $(ARG)
+	@uid=$(uid) gid=$(gid) docker-compose $(cmd) $(arg)
 
 build:
-	@make -s _compose CMD=build
+	@make -s _compose cmd=build
 
-up: start # logsf
+build-nc:
+	@make -s _compose cmd="build --no-cache"
+
+up: start console # logsf
 start: _prepare
-	@make -s _compose CMD="up -d"
+	@make -s _compose cmd="up -d"
+clean:
+	rm -rf .data
+cup: clean up
 stop: down
 down:
-	@make -s _compose CMD=down
+	@make -s _compose cmd=down
 restart:
-	@make -s _compose CMD=restart
+	@make -s _compose cmd=restart
 
 logs:
-	@make -s _compose CMD=logs
+	@make -s _compose cmd=logs
 logsf:
-	@make -s _compose CMD="logs -f"
+	@make -s _compose cmd="logs -f"
 
 console:
 	@docker exec -it $(app) /bin/bash --login
